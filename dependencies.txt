@@ -1,3 +1,5 @@
 smdb_api
 smdb_logger
 smdb_web_server
+discord
+requests
