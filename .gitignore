@@ -3,3 +3,4 @@
 *.log
 *.cfg
 *pyc*
+*venv*

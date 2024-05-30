@@ -169,7 +169,6 @@ class Bell:
 
     def read_config(self) -> Dict[str, Union[List[Dict[str, Any]], Dict[str, Any]]]:
         if not path.exists(self.config_path):
-            self.logger.warning("Config file created!")
             self.write_config({"request_time": 60, "SERVER": { "host": "LOCAL IP", "port": 6969 }, "BELL": { "host": "ESP IP", "port": 6900 }, "recepients": {}})
             raise FileNotFoundError("Config file not found. Please fill in the newly created config file!")
         config = {}
