@@ -1,0 +1,194 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: var(--main-color-dark);
+    color: var(--text-color-light);
+}
+
+h1 {
+    text-align: center;
+    font-size: 5em;
+}
+
+h1 svg {
+    width: .5em;
+}
+
+.container {
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-bottom: 15px;
+}
+
+.container button {
+    height: 3em;
+    width: 25%;
+    margin-left: 5px;
+    border-radius: 10px;
+    border-color: var(--special-two-color-light);
+    border-style: solid;
+    background-color: var(--accent-color-dark);
+    color: var(--text-color-light);
+}
+
+.container button:hover {
+    background-color: var(--accent-color-light);
+    color: var(--text-color-dark);
+}
+
+.container button:disabled, .container button:disabled:hover {
+    border-width: 0px;
+    background-color: rgba(128, 128, 128, 50%);
+    color: var(--text-color-light);
+}
+
+.container select {
+    width: 99%;
+    height: 3em;
+    border-radius: 10px;
+}
+
+.container .data-container {
+    position: relative;
+    width: 16em;
+    height: 16em;
+    border-radius: 50%;
+    background: var(--special-two-color-dark) linear-gradient(to right, transparent, 50%, var(--special-two-color-light) 0);
+}
+
+.container .data-container.temp {
+    --temperature-color: hsl(var(--perc), 100%, 50%);
+    background: var(--temperature-color);
+}
+
+.container .data-container h3 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    transform: translate(-50%, -50%);
+    font-size: 2.8em;
+    z-index: 1;
+    font-weight: 500;
+}
+
+.container .data-container span.title {
+    position: absolute;
+    top: 62%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    font-weight: 500;
+    font-size: 1.5em;
+    color: var(--special-two-color-dark);
+    text-transform: uppercase;
+}
+
+.container .data-container h3 span.unit {
+    margin: 0;
+    transform: translate(-50%, -50%);
+    font-size: .6em;
+    font-weight: 500;
+}
+
+.container .data-container::before {
+    content: '';
+    display: block;
+    height: 100%;
+    margin-left: 50%;
+    transform-origin: left;
+    border-radius: 0 100% 100% 0/50%;
+}
+
+.container .data-container.temp::before {
+    display: none;
+}
+
+.container .data-container::after {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border-radius: 50%;
+    background: var(--main-color-dark);
+}
+
+.container .data-container::before {
+    background-color: var(--special-two-color-light);
+    transform: rotate(calc(((var(--perc) - 50) *0.01turn)));
+}
+
+.container .data-container.less::before {
+    background-color: var(--special-two-color-dark);
+    transform: rotate(calc(((var(--perc) - 0) * 0.01turn)));
+}
+
+.container .weatherItem {
+    position: relative;
+    text-align: center;
+    width: 16em;
+    height: 16em;
+    border-radius: 15px;
+    padding: 5px;
+    background-color: var(--accent-color-dark);
+}
+
+.container .weatherItem .time {
+    justify-content: center;
+    width: 100%;
+    font-weight: 300;
+    font-size: 1.5em;
+    z-index: 1;
+    color: red;
+}
+
+.container .weatherItem .temp {
+    justify-content: center;
+    width: 100%;
+    font-weight: 300;
+    font-size: 2em;
+    z-index: 1;
+    color: var(--color);
+}
+
+.container .weatherItem .pressure {
+    justify-content: center;
+    width: 100%;
+    font-weight: 300;
+    font-size: 1.8em;
+    z-index: 1;
+    color: var(--color);
+}
+
+.container .weatherItem .humidity {
+    justify-content: center;
+    width: 100%;
+    font-weight: 300;
+    font-size: 2em;
+    z-index: 1;
+    color: cyan;
+}
+
+.container .weatherItem svg {
+    width: .5em;
+    fill: var(--icon-color);
+}
+
+.hidden {
+    display: none;
+    width: 0px;
+    height: 0px;
+    z-index: 999999;
+}

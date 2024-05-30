@@ -1,0 +1,38 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ page_title }}</title>
+        <link rel="stylesheet" href="static/colorschema.css">
+        <link rel="stylesheet" href="static/styles.css">
+        <link rel="icon" href="static/favicon.svg" sizes="any" type="image/svg+xml">
+    </head>
+    <body>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <div>
+            <div data-hide="false" class="container">
+                <button id="toggle">Show custom chart</button>
+            </div>
+            <div class="container hidden">
+                <div style="width: 100%;">
+                    <select id="options">
+                        <option value="" selected disabled></option>
+                    </select>
+                </div>
+                <button id="off" value="off" disabled>Off</button>
+                <button id="Y1" value="Y1" disabled>Y1</button>
+                <button id="Y2" value="Y2" disabled>Y2</button>
+            </div>
+            <div class="container hidden">
+                <div id="chart"></div>
+            </div>
+            <div class="container">
+                <div id="Temperature-Humidity"></div>
+            </div>
+            <div class="container">
+                <div id="Humidity-Pressure"></div>
+            </div>
+        </div>
+        <script src="static/charts.js"></script>
+    </body>
+</html>

@@ -1,0 +1,14 @@
+:root {
+    --main-color-dark:#5a6686;
+    --main-color-light:#616d91;
+    --accent-color-dark:#252435;
+    --accent-color-liht:#2e3445;
+    --special-one-color-dark:#352a33;
+    --special-one-color-light:#695264;
+    --special-two-color-dark:#0d2c43;
+    --special-two-color-light:#174f76;
+    --special-three-color-dark:#6d0808;
+    --special-three-color-light:#900605;
+    --text-color-dark: #000;
+    --text-color-light: #fff;
+}

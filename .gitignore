@@ -1,0 +1,5 @@
+*powerbi*
+*.vscode*
+*.log
+*.cfg
+*pyc*
