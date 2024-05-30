@@ -28,4 +28,5 @@ call python -m pip install -r dependencies.txt --upgrade
 call cd src
 ECHO Starting
 call python main.py %*
+cd ..
 call venv/Scripts/deactivate.bat
