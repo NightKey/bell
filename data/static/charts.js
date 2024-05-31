@@ -100,7 +100,7 @@ function createCharts() {
         {x: weatherHistoryData.map(item => new Date(item.time)), y: weatherHistoryData.map(item => item.humidity), mode: "lines", name: "Humidity %", yaxis: "y2"}
     ];
     let temp_hum_oprtions = {
-        title: "Templerature-humidity",
+        title: "Temperature-Humidity",
         yaxis: {
             title: `Temperature ${weatherHistoryData[0].temperature_unit}`
         },
