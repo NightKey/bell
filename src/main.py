@@ -5,7 +5,7 @@ from typing import Dict, List, Any, Union
 from smdb_web_server import HTMLServer, UrlData
 from threading import Thread, Event
 from time import sleep
-from os import path
+from os import path, mkdir
 from data import SensorData, Recepient, Thresholds, temperature_to_hue, translate
 from connector import Client
 from slope_detector import Direction, detect_slope
@@ -42,6 +42,8 @@ class Bell:
         self.api.create_function("AddRecepient", "Adds recepient to the bell and weather alerts. At least one argument is required!\nUsage: &AddRecepient [falling|rising|bell]\nCategory: NETWORK", self.add_recepient, needs_arguments=True)
 
     def save_datapoints(self) -> None:
+        if not path.exists(ROOT, "data", "powerbi"):
+            mkdir(ROOT, "data", "powerbi")
         with open(path.join(ROOT, "data", "powerbi", f"data_history{datetime.now().strftime(r'%Y.%m.%d')}.json"), "w") as fp:
             fp.writelines(dumps([item.to_dict() for item in self.sensor_history]))
 
