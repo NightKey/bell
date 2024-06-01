@@ -42,8 +42,8 @@ class Bell:
         self.api.create_function("AddRecepient", "Adds recepient to the bell and weather alerts. At least one argument is required!\nUsage: &AddRecepient [falling|rising|bell]\nCategory: NETWORK", self.add_recepient, needs_arguments=True)
 
     def save_datapoints(self) -> None:
-        if not path.exists(ROOT, "data", "powerbi"):
-            mkdir(ROOT, "data", "powerbi")
+        if not path.exists(path.join(ROOT, "data", "powerbi")):
+            mkdir(path.join(ROOT, "data", "powerbi"))
         with open(path.join(ROOT, "data", "powerbi", f"data_history{datetime.now().strftime(r'%Y.%m.%d')}.json"), "w") as fp:
             fp.writelines(dumps([item.to_dict() for item in self.sensor_history]))
 
