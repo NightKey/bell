@@ -63,7 +63,7 @@ function updateCustomChart() {
             let data = weatherHistoryData.map(item => item[option.name.toLowerCase()]);
             if (option.unit.includes("mbar")) {
                 for(let index = 0; index < data.length; index ++) {
-                    data = data.map(item => Math.round(((item / 100) + Number.EPSILON) * 10) / 10);
+                    data = weatherHistoryData.map(item => Math.round(((item[option.name.toLowerCase()] / 100) + Number.EPSILON) * 10 ) / 10);
                 }
             }
             chart_data.push(
