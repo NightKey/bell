@@ -194,12 +194,13 @@ h1 svg {
 }
 
 @media screen and (max-width: 430px) {
-    body {
-        padding-top: -5px;
-    }
 
     h1 {
         font-size: 2em;
+    }
+
+    .container {
+        gap: 20px;
     }
 
     .container .data-container,
