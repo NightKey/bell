@@ -192,3 +192,43 @@ h1 svg {
     height: 0px;
     z-index: 999999;
 }
+
+@media screen and (max-width: 430px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    .container .data-container,
+    .container .weatherItem {
+        width: 8em;
+        height: 8em;
+    }
+
+    .container .data-container::after {
+        inset: 5px;
+    }
+
+    .container .data-container h3 {
+        font-size: 1.4em;
+    }
+
+    .container .data-container span.title {
+        font-size: .8em;
+    }
+
+    .container .weatherItem .time {
+        font-size: .7em;
+    }
+
+    .container .weatherItem .temp {
+        font-size: 1em;
+    }
+
+    .container .weatherItem .humidity {
+        font-size: 1em;
+    }
+
+    .container .weatherItem .pressure {
+        font-size: 1em;
+    }
+}
