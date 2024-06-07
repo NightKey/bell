@@ -52,7 +52,7 @@ window.onload = function() {
     let createItem = function(item, prevItem) {
         const weatherItemDiv = document.createElement('div');
         weatherItemDiv.classList.add('weatherItem');
-        let pressure_dif = (Math.round((((prevItem.pressure / 100) + Number.EPSILON) * 10) / 10)) - (Math.round((((item.pressure / 100) + Number.EPSILON) * 10) / 10));
+        let pressure_dif = (Math.round(((prevItem.pressure / 100) + Number.EPSILON) * 10) / 10) - (Math.round(((item.pressure / 100) + Number.EPSILON) * 10) / 10);
         let humidity_dif = prevItem.humidity - item.humidity;
         let temperature_dif = prevItem.temperature - item.temperature;
         let heatindex_dif = prevItem.heatindex - item.heatindex;

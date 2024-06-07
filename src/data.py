@@ -42,7 +42,7 @@ class SensorData:
 
     def set_delta_compared_to(self, other: Union["SensorData", None]) -> None:
         if (other is None): self.pressure_delta = 0
-        else: self.pressure_delta = other.pressure - self.pressure
+        else: self.pressure_delta = self.pressure - other.pressure
 
     @staticmethod
     def from_json(data: str) -> "SensorData":
