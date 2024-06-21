@@ -194,7 +194,7 @@ class Bell:
 
     def add_recepient(self, message: Message) -> None:
         flags = message.content.split(',')
-        user = Recepient(message.sender, message.interface, "falling" in flags, "rising" in flags, "bell" in flags)
+        user = Recepient(message.sender, message.interface.value, "falling" in flags, "rising" in flags, "bell" in flags)
         self.recepients.append(user)
         self.add_recepient_to_config(user)        
 
