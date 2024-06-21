@@ -39,7 +39,7 @@ class Bell:
         self.web_server.add_url_rule("/chart", self.__chart)
     
     def prepare_api(self):
-        self.api.create_function("AddRecepient", "Adds recepient to the bell and weather alerts. At least one argument is required!\nUsage: &AddRecepient [falling|rising|bell]\nCategory: NETWORK", self.add_recepient, needs_arguments=True)
+        self.api.create_function("AddRecepient", "Adds recepient to the bell and weather alerts. At least one argument is required, if multiple is present separate them by ','!\nUsage: &AddRecepient [falling|rising|bell]\nCategory: NETWORK", self.add_recepient, needs_arguments=True)
 
     def save_datapoints(self) -> None:
         if not path.exists(path.join(ROOT, "data", "powerbi")):
@@ -171,7 +171,7 @@ class Bell:
 
     def read_config(self) -> Dict[str, Union[List[Dict[str, Any]], Dict[str, Any]]]:
         if not path.exists(self.config_path):
-            self.write_config({"request_time": 60, "SERVER": { "host": "LOCAL IP", "port": 6969 }, "BELL": { "host": "ESP IP", "port": 6900 }, "recepients": {}})
+            self.write_config({"request_time": 60, "SERVER": { "host": "LOCAL IP", "port": 6969 }, "BELL": { "host": "ESP IP", "port": 6900 }, "recepients": []})
             raise FileNotFoundError("Config file not found. Please fill in the newly created config file!")
         config = {}
         with open(self.config_path, "r") as fp:
