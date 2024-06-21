@@ -1,5 +1,5 @@
 from datetime import datetime
-from smdb_api import API, Message
+from smdb_api import API, Message, Interface
 from smdb_logger import Logger, LEVEL
 from typing import Dict, List, Any, Union
 from smdb_web_server import HTMLServer, UrlData
@@ -124,7 +124,7 @@ class Bell:
         for person in self.recepients:
             if not person.alert_on_bell:
                 continue
-            self.api.send_message("Bell", person.interface, person.id)
+            self.api.send_message("Bell", Interface(person.interface), person.id)
     
     def get_trends(self) -> List[Direction]:
         self.sensor_history.sort()
