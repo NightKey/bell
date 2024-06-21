@@ -1,5 +1,5 @@
 from datetime import datetime
-from smdb_api import API, Message, Interface
+from smdb_api import API, Message, Interface, Privilege
 from smdb_logger import Logger, LEVEL
 from typing import Dict, List, Any, Union
 from smdb_web_server import HTMLServer, UrlData
@@ -39,7 +39,7 @@ class Bell:
         self.web_server.add_url_rule("/chart", self.__chart)
     
     def prepare_api(self):
-        self.api.create_function("AddRecepient", "Adds recepient to the bell and weather alerts. At least one argument is required, if multiple is present separate them by ','!\nUsage: &AddRecepient [falling|rising|bell]\nCategory: NETWORK", self.add_recepient, needs_arguments=True)
+        self.api.create_function("AddRecepient", "Adds recepient to the bell and weather alerts. At least one argument is required, if multiple is present separate them by ','!\nUsage: &AddRecepient [falling|rising|bell]\nCategory: NETWORK", self.add_recepient, privilege=Privilege.OnlyAdmin, needs_arguments=True)
 
     def save_datapoints(self) -> None:
         if not path.exists(path.join(ROOT, "data", "powerbi")):
