@@ -153,21 +153,27 @@ class Bell:
     def main_loop(self):
         message_sent = False
         while not self.stop_event.is_set():
-            self.fetch_data()
-            (pressure_dir, temperature_dir, humidity_dir) = self.get_trends()
-            if (pressure_dir == Direction.FALLING and not message_sent):
-                for person in self.recepients:
-                    if (not person.alert_on_falling): continue
-                    self.api.send_message("Pressure is falling rapidly!", person.interface, person.id)
-                message_sent = True
-            elif (pressure_dir == Direction.RISING and not message_sent):
-                for person in self.recepients:
-                    if (not person.alert_on_rising): continue
-                    self.api.send_message("Pressure is rising rapidly!", person.interface, person.id)
-                message_sent = True
-            elif (pressure_dir == Direction.STATIC):
-                message_sent = False
-            self.stop_event.wait(self.request_time)
+            try:
+                self.fetch_data()
+                (pressure_dir, temperature_dir, humidity_dir) = self.get_trends()
+                if (pressure_dir == Direction.FALLING and not message_sent):
+                    for person in self.recepients:
+                        if (not person.alert_on_falling): continue
+                        self.api.send_message("Pressure is falling rapidly!", Interface(person.interface), person.id)
+                    message_sent = True
+                elif (pressure_dir == Direction.RISING and not message_sent):
+                    for person in self.recepients:
+                        if (not person.alert_on_rising): continue
+                        self.api.send_message("Pressure is rising rapidly!", Interface(person.interface), person.id)
+                    message_sent = True
+                elif (pressure_dir == Direction.STATIC):
+                    message_sent = False
+                self.stop_event.wait(self.request_time)
+            except KeyboardInterrupt:
+                self.logger.info("Keyboard interrupt!")
+                self.stop()
+            except Exception as ex:
+                self.logger.error(f"Exception: {ex}")
 
     def read_config(self) -> Dict[str, Union[List[Dict[str, Any]], Dict[str, Any]]]:
         if not path.exists(self.config_path):
