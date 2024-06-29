@@ -68,7 +68,6 @@ class Bell:
         return self.web_server.render_template_file("chart", page_title="Charts")
 
     def __index(self, _) -> str:
-        self.fetch_data()
         current_data = self.sensor_history[0]
         temperatureHue = int(temperature_to_hue(current_data.temperature))
         heatIndexHue = int(temperature_to_hue(current_data.heat_index))
@@ -91,10 +90,11 @@ class Bell:
 
     def start(self):
         self.api.validate()
+        self.bell_connector.start()
+        self.fetch_data()
         self.prepare_webpage()
         self.prepare_api()
         self.web_server.serve_forever_threaded(TEMPLATES, STATIC, "Home Weather Station")
-        self.bell_connector.start()
         if self.main_thread is not None: return
         self.main_thread = Thread(target=self.main_loop)
         self.main_thread.name = "Bell main loop"
