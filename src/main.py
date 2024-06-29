@@ -117,7 +117,7 @@ class Bell:
         for person in self.recepients:
             if not person.alert_on_bell:
                 return
-            self.api.send_message("Bell is not connected!", person.interface, person.id)
+            self.api.send_message("Bell is not connected!", Interface(person.interface), person.id)
 
     def bell_callback(self):
         if self.logger is not None: self.logger.trace("Bell rang")

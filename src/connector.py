@@ -116,7 +116,6 @@ class Client:
             except ConnectionResetError:
                 enablePrint()
                 self.connected = False
-                self.create_connection()
                 return None
             except Exception as ex:
                 enablePrint()
