@@ -46,7 +46,8 @@ class Client:
     def create_connection(self):
         self.ready_event.clear()
         try:
-            if self.socket.connect_ex((self.target_ip, self.target_port)) != 0:
+            was_connected = self.socket.connect_ex((self.target_ip, self.target_port)) != 0
+            if was_connected:
                 self.socket.close()
                 self.socket.detach()
                 self.socket = socket(AF_INET, SOCK_STREAM)
@@ -55,6 +56,7 @@ class Client:
             self.socket.settimeout(2)
             self.connected = True
             self.connection_error_sent = False
+            if was_connected: self.logger.info("Reconnected")
         except TimeoutError:
             if self.logger is not None: self.logger.warning("Connection timedout!")
             if not self.connection_error_sent: 
@@ -91,6 +93,9 @@ class Client:
                     return response
             if self.logger is not None: self.logger.debug(f"Response: {response}")
             return response
+        except ConnectionResetError:
+            self.connected = False
+            self.logger.warning("Connection reset by the server")
         finally:
             self.read_lock.release()
             if self.logger is not None: self.logger.trace("lock released")
@@ -116,6 +121,7 @@ class Client:
             except ConnectionResetError:
                 enablePrint()
                 self.connected = False
+                self.logger.warning("Connection reset by the server")
                 return None
             except Exception as ex:
                 enablePrint()
@@ -127,6 +133,7 @@ class Client:
         while not self.stop_event.is_set():
             while not self.connected:
                 self.create_connection()
+                self.stop_event.wait(1)
             while self.read_lock.locked():
                 self.stop_event.wait(1)
             self.read_lock.acquire()
