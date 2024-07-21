@@ -146,7 +146,7 @@ class Bell:
                 self.save_datapoints()
                 self.sensor_history = [sensorData]
                 self.last_save = datetime.now()
-            self.sensor_history.sort(reverse=True)
+            self.sensor_history.sort()
         except JSONDecodeError:
             if self.logger is not None: self.logger.warning(f"Response was not JSON deserializable: `{response}`")
 
