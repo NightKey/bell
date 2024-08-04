@@ -25,7 +25,7 @@ class SensorData:
         ret["heatindex_color"] = temperature_to_hue(self.heat_index)
         return ret
     
-    def __repr__(self) -> str:
+    def __repr__(self) -> dict:
         ret = {"temperature": self.temperature, "temperature_unit": self.temperature_unit, "humidity": self.humidity, "pressure": self.pressure, "heatindex": self.heat_index, "pressure_delta": self.pressure_delta}
         ret["time"] = datetime.fromtimestamp(self.time).strftime(r"%Y.%B.%d. %H:%M:%S")
         return ret

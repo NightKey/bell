@@ -54,14 +54,17 @@ class Bell:
     def __get_weather(self, data: UrlData) -> str:
         if ("current" in data.query):
             self.fetch_data()
+            self.sensor_history.sort(reverse=True)
             return self.sensor_history[0].to_json()
         elif ("history" in data.query):
             if (len(self.sensor_history) >= 5):
+                self.sensor_history.sort(reverse=True)
                 data = {"items": [item.to_dict() for item in self.sensor_history[1:5]], "refference": self.sensor_history[5].to_dict()}
             else:
                 data = {}
             return dumps(data)
         elif ("chart" in data.query):
+            self.sensor_history.sort(reverse=True)
             return dumps({"items": [it.to_dict(True) for it in self.sensor_history]})
 
     def __chart(self, _) -> str:
@@ -138,7 +141,8 @@ class Bell:
         try:
             sensorData = SensorData.from_json(response)
             if (len(self.sensor_history) > 0):
-                sensorData.set_delta_compared_to(self.sensor_history[-1])
+                self.sensor_history.sort(reverse=True)
+                sensorData.set_delta_compared_to(self.sensor_history[0])
             else:
                 sensorData.set_delta_compared_to(None)
             self.sensor_history.insert(0, sensorData)
@@ -146,7 +150,6 @@ class Bell:
                 self.save_datapoints()
                 self.sensor_history = [sensorData]
                 self.last_save = datetime.now()
-            self.sensor_history.sort(reverse=True)
         except JSONDecodeError:
             if self.logger is not None: self.logger.warning(f"Response was not JSON deserializable: `{response}`")
 
@@ -220,5 +223,3 @@ if __name__ == "__main__":
         print("Stopping...")
     finally:
         bell.stop()
-
-
