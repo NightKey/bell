@@ -77,6 +77,7 @@ class Bell:
         pressureP = int(translate(current_data.pressure / 100, 980, 1020, 0, 100))
         return self.web_server.render_template_file(
             "index",
+            time=current_data.time_to_string(False),
             page_title="Weather",
             humidity=str(round(current_data.humidity, 1)),
             humidityp=str(int(current_data.humidity)),
@@ -105,9 +106,22 @@ class Bell:
         if (self.request_time > 10):
             Thread(target=self.hearth_beat, name="Bell Hearth Beat thread").start()
 
+    def restart(self):
+        self.main_thread = Thread(target=self.main_loop)
+        self.main_thread.name = "Bell main loop"
+        self.main_thread.start()
+
+    def is_alive(self) -> bool:
+        return self.main_thread is not None and self.main_thread.is_alive()
+
     def hearth_beat(self):
         while not self.stop_event.is_set():
-            self.bell_connector.send("ping")
+            if self.bell_connector.is_alive():
+                self.bell_connector.send("ping")
+            else:
+                self.logger.error("Bell connector failed!")
+                self.logger.debug("Re-creating bell connector")
+                self.bell_connector.start()
             self.stop_event.wait(10)
 
     def stop(self):
@@ -218,6 +232,10 @@ if __name__ == "__main__":
     bell.start()
     try:
         while True:
+            if not bell.is_alive():
+                bell.logger.error("Bell died!")
+                bell.logger.debug("Restarting")
+                bell.restart()
             sleep(1)
     except KeyboardInterrupt:
         print("Stopping...")

@@ -43,6 +43,9 @@ class Client:
         self.loop_thread.name = "Connector Loop Thread"
         self.loop_thread.start()
 
+    def is_alive(self) -> bool:
+        return self.loop_thread is not None and self.loop_thread.is_alive()
+
     def create_connection(self):
         self.ready_event.clear()
         try:

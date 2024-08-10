@@ -19,20 +19,19 @@ class SensorData:
 
     def to_dict(self, isIso: bool = False):
         ret = {"temperature": self.temperature, "temperature_unit": self.temperature_unit, "humidity": self.humidity, "pressure": self.pressure, "heatindex": self.heat_index, "pressure_delta": self.pressure_delta}
-        if isIso: ret["time"] = datetime.fromtimestamp(self.time, tz=datetime.now().astimezone().tzinfo).replace(microsecond=0).isoformat()
-        else: ret["time"] = datetime.fromtimestamp(self.time).strftime(r"%Y.%B.%d. %H:%M:%S")
+        ret["time"] = self.time_to_string(isIso)
         ret["temperature_color"] = temperature_to_hue(self.temperature)
         ret["heatindex_color"] = temperature_to_hue(self.heat_index)
         return ret
     
     def __repr__(self) -> dict:
         ret = {"temperature": self.temperature, "temperature_unit": self.temperature_unit, "humidity": self.humidity, "pressure": self.pressure, "heatindex": self.heat_index, "pressure_delta": self.pressure_delta}
-        ret["time"] = datetime.fromtimestamp(self.time).strftime(r"%Y.%B.%d. %H:%M:%S")
+        ret["time"] = self.time_to_string(False)
         return ret
 
     def to_json(self):
         ret = {"temperature": self.temperature, "temperature_unit": self.temperature_unit, "humidity": self.humidity, "pressure": self.pressure, "heatindex": self.heat_index, "pressure_delta": self.pressure_delta}
-        ret["time"] = datetime.fromtimestamp(self.time).strftime(r"%Y.%B.%d. %H:%M:%S")
+        ret["time"] = self.time_to_string(False)
         return dumps(ret)
     
     def __lt__(self, other: Any) -> bool:
@@ -43,6 +42,12 @@ class SensorData:
     def set_delta_compared_to(self, other: Union["SensorData", None]) -> None:
         if (other is None): self.pressure_delta = 0
         else: self.pressure_delta = self.pressure - other.pressure
+
+    def time_to_string(self, isIso: bool = False) -> str:
+        time = ""
+        if isIso: time = datetime.fromtimestamp(self.time, tz=datetime.now().astimezone().tzinfo).replace(microsecond=0).isoformat()
+        else: time = datetime.fromtimestamp(self.time).strftime(r"%Y.%B.%d. %H:%M:%S")
+        return time
 
     @staticmethod
     def from_json(data: str) -> "SensorData":
