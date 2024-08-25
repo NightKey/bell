@@ -71,6 +71,7 @@ class Bell:
         return self.web_server.render_template_file("chart", page_title="Charts")
 
     def __index(self, _) -> str:
+        self.sensor_history.sort(reverse=True)
         current_data = self.sensor_history[0]
         temperatureHue = int(temperature_to_hue(current_data.temperature))
         heatIndexHue = int(temperature_to_hue(current_data.heat_index))
