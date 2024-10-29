@@ -75,7 +75,7 @@ class Bell:
         current_data = self.sensor_history[0]
         temperatureHue = int(temperature_to_hue(current_data.temperature))
         heatIndexHue = int(temperature_to_hue(current_data.heat_index))
-        pressureP = int(translate(current_data.pressure / 100, 980, 1020, 0, 100))
+        pressureP = int(translate(current_data.pressure / 100, 960, 1040, 0, 100))
         return self.web_server.render_template_file(
             "index",
             time=current_data.time_to_string(False),
