@@ -3,6 +3,7 @@ from json import loads, dumps
 from datetime import datetime
 from typing import Dict, Any, Union
 from enum import Enum
+from sys import float_info
 
 @dataclass
 class SensorData:
@@ -17,11 +18,13 @@ class SensorData:
     def __post_init__(self):
         self.time = datetime.now().timestamp()
 
-    def to_dict(self, isIso: bool = False):
+    def to_dict(self, isIso: bool = False, convertPressure: bool = False):
         ret = {"temperature": self.temperature, "temperature_unit": self.temperature_unit, "humidity": self.humidity, "pressure": self.pressure, "heatindex": self.heat_index, "pressure_delta": self.pressure_delta}
         ret["time"] = self.time_to_string(isIso)
         ret["temperature_color"] = temperature_to_hue(self.temperature)
         ret["heatindex_color"] = temperature_to_hue(self.heat_index)
+        if (convertPressure):
+            ret["pressure"] = (round(((self.pressure / 100) + float_info.epsilon) * 10) / 10)
         return ret
     
     def __repr__(self) -> dict:

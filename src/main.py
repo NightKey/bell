@@ -65,7 +65,7 @@ class Bell:
             return dumps(data)
         elif ("chart" in data.query):
             self.sensor_history.sort(reverse=True)
-            return dumps({"items": [it.to_dict(True) for it in self.sensor_history]})
+            return dumps({"items": [it.to_dict(isIso=True, convertPressure=True) for it in self.sensor_history]})
 
     def __chart(self, _) -> str:
         return self.web_server.render_template_file("chart", page_title="Charts")

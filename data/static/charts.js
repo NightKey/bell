@@ -8,7 +8,7 @@ function updateButtons(optionName) {
     let buttons = document.getElementsByTagName("button");
     for (let index = 0; index < buttons.length; index++) {
         const button = buttons[index];
-        if (button.getAttribute("id") === "toggle") continue;
+        if (button.getAttribute("id") === "toggle" || button.getAttribute("id") == "average") continue;
         if (selectedOption !== undefined && button.getAttribute("id") !== selectedOption.state) {
             button.removeAttribute("disabled");
         } else {
@@ -38,6 +38,7 @@ class Option {
 let all = [];
 let weatherHistoryData = [];
 let chartConfig = {scrollZoom: true, modeBarButtonsToRemove: ["lasso2d", "zoomIn2d", "zoomOut2d", "resetScale2d", "select2d", "toggleSpikelines"]}
+let useAverage = false;
 
 function fillAll() {
     all.push(new Option("Temperature", weatherHistoryData[0].temperature_unit, "rgb(0, 255, 0)"));
@@ -53,6 +54,31 @@ function fillData() {
     });
 }
 
+function mapWeatherHistoryData(name) {
+    let accumulator = [];
+    let startTime = "";
+    let result = [];
+    let firstRun = true;
+    if (!useAverage) {
+        return weatherHistoryData.map(item => Object.fromEntries(new Map([["time", item.time], ["data", item[name]]])));
+    }
+    weatherHistoryData.sort((item) => new Date(item.time)).forEach((item) => {
+        currentTime = new Date(item.time)
+        if (startTime == "" || currentTime - startTime > 3600000) {
+            if (!firstRun) {
+                result.push(Object.fromEntries(new Map([["time", startTime], ["data", accumulator.reduce((a, b) => a + b) / accumulator.length]])));
+            } else {
+                firstRun = false;
+            }
+            accumulator = [];
+            startTime = currentTime;
+        }
+        accumulator.push(item[name]);
+    });
+    result.push(Object.fromEntries(new Map([["time", startTime], ["data", accumulator.reduce((a, b) => a + b) / accumulator.length]])));
+    return result;
+}
+
 function updateCustomChart() {
     let chart_data = [];
     let y1Names = [];
@@ -60,14 +86,10 @@ function updateCustomChart() {
     all.forEach(option => {
         if (option.state != "off") {
             let name = `${option.name} (${option.unit})`;
-            let data = weatherHistoryData.map(item => item[option.name.toLowerCase()]);
-            if (option.unit.includes("mbar")) {
-                for(let index = 0; index < data.length; index ++) {
-                    data = weatherHistoryData.map(item => Math.round(((item[option.name.toLowerCase()] / 100) + Number.EPSILON) * 10 ) / 10);
-                }
-            }
+            let data = mapWeatherHistoryData(option.name.toLowerCase());
+            mapWeatherHistoryData(option.name.toLowerCase());
             chart_data.push(
-                {x: weatherHistoryData.map(item => new Date(item.time)), y: data, mode: "lines", name: name, yaxis: option.state.toLowerCase(), line: {color: option.color}}
+                {x: data.map(item => item.time), y: data.map(item => item.data), mode: "lines", name: name, yaxis: option.state.toLowerCase(), line: {color: option.color}}
             );
             if (option.state.toLowerCase() === "y1") {
                 y1Names.push(name);
@@ -95,9 +117,15 @@ function updateCustomChart() {
 }
 
 function createCharts() {
+    let temp_data = mapWeatherHistoryData("temperature");
+    mapWeatherHistoryData("temperature"); //I have no idea, why it can't run correctly without calling this again.
+    let humidity_data = mapWeatherHistoryData("humidity");
+    mapWeatherHistoryData("humidity");
+    let pressure_data = mapWeatherHistoryData("pressure");
+    mapWeatherHistoryData("pressure");
     let temp_hum_chart_data = [
-        {x: weatherHistoryData.map(item => new Date(item.time)), y: weatherHistoryData.map(item => item.temperature), mode: "lines", name: `Temperature ${weatherHistoryData[0].temperature_unit}`, yaxis: "y"},
-        {x: weatherHistoryData.map(item => new Date(item.time)), y: weatherHistoryData.map(item => item.humidity), mode: "lines", name: "Humidity %", yaxis: "y2"}
+        {x: temp_data.map(item => item.time), y: temp_data.map(item => item.data), mode: "lines", name: `Temperature ${weatherHistoryData[0].temperature_unit}`, yaxis: "y"},
+        {x: humidity_data.map(item => item.time), y: humidity_data.map(item => item.data), mode: "lines", name: "Humidity %", yaxis: "y2"}
     ];
     let temp_hum_oprtions = {
         title: "Temperature-Humidity",
@@ -115,8 +143,8 @@ function createCharts() {
         }
     };
     let hum_press_chart_data =  [
-        {x: weatherHistoryData.map(item => new Date(item.time)), y: weatherHistoryData.map(item => item.humidity), mode: "lines", name: "Humidity %", yaxis: "y"},
-        {x: weatherHistoryData.map(item => new Date(item.time)), y: weatherHistoryData.map(item => Math.round(((item.pressure / 100) + Number.EPSILON) * 10) / 10), mode: "lines", name: "Pressure mbar", yaxis: "y2"}
+        {x: humidity_data.map(item => item.time), y: humidity_data.map(item => item.data), mode: "lines", name: "Humidity %", yaxis: "y"},
+        {x: pressure_data.map(item => item.time), y: pressure_data.map(item => item.data), mode: "lines", name: "Pressure mbar", yaxis: "y2"}
     ];
     let hum_press_oprtions = {
         title: "Humidity-Pressure",
@@ -157,6 +185,14 @@ function toggleClicked() {
     }
 }
 
+function toggleAverage() {
+    let button = document.getElementById("average");
+    button.innerText = button.innerText == "Show hourly average" ? "Show raw data" : "Show hourly average";
+    useAverage = button.innerText == "Show raw data";
+    updateCustomChart();
+    createCharts();
+}
+
 window.onload = function() {
     fetch('/get?chart')
         .then(response => response.json())
@@ -172,6 +208,7 @@ window.onload = function() {
     let buttons = document.getElementsByTagName("button");
     for (let index = 0; index < buttons.length; index++) {
         const button = buttons[index];
+        if (button.getAttribute("id") === "toggle" || button.getAttribute("id") == "average") continue;
         button.addEventListener('click', function() {
             let selected = selector.selectedOptions[0].value;
             all.forEach(option => {
@@ -188,4 +225,5 @@ window.onload = function() {
         updateButtons(selected);
     });
     document.getElementById("toggle").addEventListener("click", toggleClicked);
+    document.getElementById("average").addEventListener("click", toggleAverage);
 }
