@@ -127,9 +127,9 @@ class Bell:
 
     def stop(self):
         self.api.close("Program terminating")
+        self.stop_event.set()
         self.web_server.stop()
         self.bell_connector.stop()
-        self.stop_event.set()
     
     def bell_timeout_callback(self):
         for person in self.recepients:

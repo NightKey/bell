@@ -43,8 +43,22 @@ class Client:
         self.loop_thread.name = "Connector Loop Thread"
         self.loop_thread.start()
 
+    def reset(self) -> None:
+        self.stop()
+        if self.logger is not None: self.logger.info("Reseting connector")
+        self.connected = False
+        self.connection_error_sent = False
+        self.stop_event = Event()
+        self.read_lock = Lock()
+        if self.logger is not None: self.logger.debug("Joining loop...")
+        self.loop_thread.join()
+        if self.logger is not None: self.logger.debug("Loop finished")
+        self.loop_thread = None
+        self.ready_event = Event()
+        self.start()
+
     def is_alive(self) -> bool:
-        return self.loop_thread is not None and self.loop_thread.is_alive()
+        return self.connected and self.loop_thread is not None and self.loop_thread.is_alive()
 
     def create_connection(self):
         self.ready_event.clear()
