@@ -47,6 +47,12 @@ class Bell:
         with open(path.join(ROOT, "data", "powerbi", f"data_history{datetime.now().strftime(r'%Y.%m.%d')}.json"), "w") as fp:
             fp.writelines(dumps([item.to_dict() for item in self.sensor_history]))
 
+    def is_above_warning_temperature(self, sensorData: SensorData) -> bool:
+        if (sensorData.temperature_unit == "°C"):
+            return sensorData.temperature > 50.0
+        elif (sensorData.temperature_unit == "°F"):
+            return sensorData.temperature > 122.00
+
     def __save(self, _) -> str:
         self.save_datapoints()
         return "Done"
@@ -131,11 +137,14 @@ class Bell:
         self.web_server.stop()
         self.bell_connector.stop()
     
-    def bell_timeout_callback(self):
+    def send_message_to_all_user(self, message: str):
         for person in self.recepients:
             if not person.alert_on_bell:
                 return
-            self.api.send_message("Bell is not connected!", Interface(person.interface), person.id)
+            self.api.send_message(message, Interface(person.interface), person.id)
+
+    def bell_timeout_callback(self):
+        self.send_message_to_all_user("Bell is not connected!")
 
     def bell_callback(self):
         if self.logger is not None: self.logger.trace("Bell rang")
@@ -155,6 +164,14 @@ class Bell:
         response = self.bell_connector.send("getSensors")
         try:
             sensorData = SensorData.from_json(response)
+            if (self.is_above_warning_temperature(sensorData)):
+                response = self.bell_connector.send("getSensors")
+                try:
+                    sensorData = SensorData.from_json(response)
+                except JSONDecodeError:
+                    if self.logger is not None: self.logger.warning(f"Response was not JSON deserializable in inner request: `{response}`")
+                if (self.is_above_warning_temperature(sensorData)):
+                    self.send_message_to_all_user(f"To high temperature detecte: {sensorData.temperature}")
             if (len(self.sensor_history) > 0):
                 self.sensor_history.sort(reverse=True)
                 sensorData.set_delta_compared_to(self.sensor_history[0])
