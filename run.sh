@@ -1,4 +1,7 @@
 #!bin/bash
+
+echo $'\033]30;Bell\007'
+
 cd "$(dirname "$0")"
 
 x-terminal-emulator -e update.sh

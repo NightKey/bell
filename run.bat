@@ -2,6 +2,8 @@
 SET main_dir=%~dp0
 cd %main_dir%
 
+TITLE Bell
+
 call update.bat
 
 if ERRORLEVEL 1 (

@@ -1,4 +1,7 @@
 #!bin/bash
+
+echo $'\033]30;Bell Updater\007'
+
 cd "$(dirname "$0")"
 
 git remote update
