@@ -203,6 +203,10 @@ class Bell:
                     message_sent = True
                 elif (pressure_dir == Direction.STATIC):
                     message_sent = False
+                if (abs(self.sensor_history[-1].pressure_delta) > 12 and not message_sent):
+                    for person in self.recepients:
+                        self.api.send_message(f"The pressure abruptly {'fallen' if self.sensor_history[-1].pressure_delta < 0 else 'risen'} {abs(self.sensor_history[-1].pressure_delta)} mbar between two measurements.", Interface(person.interface), person.id)
+                    message_sent = True
                 self.stop_event.wait(self.request_time)
             except KeyboardInterrupt:
                 self.logger.info("Keyboard interrupt!")
