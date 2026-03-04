@@ -112,6 +112,20 @@ h1 svg {
     font-weight: 500;
 }
 
+.container .data-container span.change {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    width: 100%
+    text-align: center;
+    margin: 0;
+    color: var(--color);
+    transform: translate(-50%, -50%);
+    font-size: 2em;
+    z-index: 1;
+    font-weight: 500;
+}
+
 .container .data-container::before {
     content: '';
     display: block;
@@ -227,6 +241,10 @@ h1 svg {
 
     .container .data-container h3 {
         font-size: 1.4em;
+    }
+
+    .container .data-container span.change {
+        font-size: 1em;
     }
 
     .container .data-container span.title {

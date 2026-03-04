@@ -1,14 +1,18 @@
 from dataclasses import dataclass, field
 from json import loads, dumps
 from datetime import datetime
-from typing import Dict, Any, Union
+from typing import Dict, Any, Union, Literal
 from enum import Enum
 from sys import float_info
+
+class TemperatureUnit(Enum):
+    C = "°C"
+    F = "°F"
 
 @dataclass
 class SensorData:
     temperature: float
-    temperature_unit: str
+    temperature_unit: TemperatureUnit
     humidity: float
     pressure: float
     heat_index: float
@@ -18,37 +22,57 @@ class SensorData:
     def __post_init__(self):
         self.time = datetime.now().timestamp()
 
-    def to_dict(self, isIso: bool = False, convertPressure: bool = False):
-        ret = {"temperature": self.temperature, "temperature_unit": self.temperature_unit, "humidity": self.humidity, "pressure": self.pressure, "heatindex": self.heat_index, "pressure_delta": self.pressure_delta}
-        ret["time"] = self.time_to_string(isIso)
-        ret["temperature_color"] = temperature_to_hue(self.temperature)
-        ret["heatindex_color"] = temperature_to_hue(self.heat_index)
-        if (convertPressure):
+    def to_dict(self, is_iso: bool = False, convert_pressure: bool = False):
+        ret = {
+            "temperature": self.temperature,
+            "temperature_unit": self.temperature_unit.value,
+            "humidity": self.humidity,
+            "pressure": self.pressure,
+            "heatindex": self.heat_index,
+            "pressure_delta": self.pressure_delta,
+            "time": self.time_to_string(is_iso),
+            "temperature_color": temperature_to_hue(self.temperature),
+            "heatindex_color": temperature_to_hue(self.heat_index)
+        }
+        if convert_pressure:
             ret["pressure"] = (round(((self.pressure / 100) + float_info.epsilon) * 10) / 10)
         return ret
     
     def __repr__(self) -> dict:
-        ret = {"temperature": self.temperature, "temperature_unit": self.temperature_unit, "humidity": self.humidity, "pressure": self.pressure, "heatindex": self.heat_index, "pressure_delta": self.pressure_delta}
-        ret["time"] = self.time_to_string(False)
-        return ret
+        return {
+            "temperature": self.temperature,
+            "temperature_unit": self.temperature_unit.value,
+            "humidity": self.humidity,
+            "pressure": self.pressure,
+            "heatindex": self.heat_index,
+            "pressure_delta": self.pressure_delta,
+            "time": self.time_to_string(False)
+        }
 
     def to_json(self):
-        ret = {"temperature": self.temperature, "temperature_unit": self.temperature_unit, "humidity": self.humidity, "pressure": self.pressure, "heatindex": self.heat_index, "pressure_delta": self.pressure_delta}
-        ret["time"] = self.time_to_string(False)
+        ret = {
+            "temperature":self.temperature,
+            "temperature_unit": self.temperature_unit.value,
+            "humidity": self.humidity,
+            "pressure": self.pressure,
+            "heatindex": self.heat_index,
+            "pressure_delta": self.pressure_delta,
+            "time": self.time_to_string(False)
+        }
         return dumps(ret)
     
     def __lt__(self, other: Any) -> bool:
-        if (isinstance(other, SensorData)):
+        if isinstance(other, SensorData):
             return self.time < other.time
         raise TypeError(f"'<' operator not supported between 'SensorData' and '{type(other)}'")
 
     def set_delta_compared_to(self, other: Union["SensorData", None]) -> None:
-        if (other is None): self.pressure_delta = 0
+        if other is None: self.pressure_delta = 0
         else: self.pressure_delta = self.pressure - other.pressure
 
-    def time_to_string(self, isIso: bool = False) -> str:
+    def time_to_string(self, is_iso: bool = False) -> str:
         time = ""
-        if isIso: time = datetime.fromtimestamp(self.time, tz=datetime.now().astimezone().tzinfo).replace(microsecond=0).isoformat()
+        if is_iso: time = datetime.fromtimestamp(self.time, tz=datetime.now().astimezone().tzinfo).replace(microsecond=0).isoformat()
         else: time = datetime.fromtimestamp(self.time).strftime(r"%Y.%B.%d. %H:%M:%S")
         return time
 
@@ -58,7 +82,7 @@ class SensorData:
         return SensorData(float(tmp["temperature"]), tmp["temperature_unit"], float(tmp["humidity"]), float(tmp["pressure"]), float(tmp["heat_index"]))
     
 @dataclass
-class Recepient:
+class Recipient:
     id: int
     interface: int
     alert_on_falling: bool
@@ -69,8 +93,8 @@ class Recepient:
         return {"id": self.id, "interface": self.interface, "alert_on_falling": self.alert_on_falling, "alert_on_rising": self.alert_on_rising, "alert_on_bell": self.alert_on_bell}
 
     @staticmethod
-    def from_json(data: Dict[str, Any]) -> "Recepient":
-        return Recepient(data["id"], data["interface"], data["alert_on_falling"], data["alert_on_rising"], data["alert_on_bell"])
+    def from_json(data: Dict[str, Any]) -> "Recipient":
+        return Recipient(data["id"], data["interface"], data["alert_on_falling"], data["alert_on_rising"], data["alert_on_bell"])
 
 class Thresholds(Enum):
     PRESSURE_POSITIVE = 200
