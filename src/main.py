@@ -94,7 +94,7 @@ class Bell:
         self.save_datapoints()
         return "Done"
 
-    def __get_weather(self, data: UrlData) -> str | None:
+    def __get_weather(self, data: UrlData) -> str:
         if "current" in data.query:
             self.fetch_data()
             self.sensor_history.sort(reverse=True)
