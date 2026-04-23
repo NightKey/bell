@@ -56,7 +56,7 @@ class Bell:
     def __init__(self, config_path: str):
         self.config_path = config_path
         config = self.read_config()
-        self.logger = Logger("Bell.log", log_folder=path.join(ROOT, "data"), level=LEVEL.INFO, use_caller_name=True)
+        self.logger = Logger("Bell.log", log_folder=path.join(ROOT, "data"), level=LEVEL.DEBUG, use_caller_name=True)
         self.api = API.from_config(path.join(ROOT, "data", "api.cfg"))
         self.web_server = HTMLServer(config["SERVER"]["host"], config["SERVER"]["port"], ROOT, logger=self.logger)
         self.sensor_history: List[SensorData] = []
@@ -222,7 +222,7 @@ class Bell:
                 except JSONDecodeError:
                     if self.logger is not None: self.logger.warning(f"Response was not JSON deserializable in inner request: `{response}`")
                 if self.is_above_warning_temperature(sensor_data):
-                    self.send_message_to_all_user(f"To high temperature detecte: {sensor_data.temperature}")
+                    self.send_message_to_all_user(f"To high temperature detected: {sensor_data.temperature}")
             if len(self.sensor_history) > 0:
                 self.sensor_history.sort(reverse=True)
                 sensor_data.set_delta_compared_to(self.sensor_history[0])

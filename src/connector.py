@@ -17,7 +17,7 @@ def blockPrint() -> None:
 def enablePrint() -> None:
     global stdout
     global is_stdout_devnull
-    if (is_stdout_devnull):
+    if is_stdout_devnull:
         stdout.close()
         stdout = __stdout__
         is_stdout_devnull = False
