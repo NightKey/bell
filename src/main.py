@@ -56,7 +56,7 @@ class Bell:
     def __init__(self, config_path: str):
         self.config_path = config_path
         config = self.read_config()
-        self.logger = Logger("Bell.log", log_folder=path.join(ROOT, "data"), level=LEVEL.DEBUG, use_caller_name=True)
+        self.logger = Logger("Bell.log", log_folder=path.join(ROOT, "data"), level=LEVEL.INFO, use_caller_name=True)
         self.api = API.from_config(path.join(ROOT, "data", "api.cfg"))
         self.web_server = HTMLServer(config["SERVER"]["host"], config["SERVER"]["port"], ROOT, logger=self.logger)
         self.sensor_history: List[SensorData] = []

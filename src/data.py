@@ -9,6 +9,14 @@ class TemperatureUnit(Enum):
     C = "°C"
     F = "°F"
 
+    @staticmethod
+    def from_string(string: str) -> 'TemperatureUnit':
+        if 'c' in string.lower():
+            return TemperatureUnit.C
+        else:
+            return TemperatureUnit.F
+
+
 @dataclass
 class SensorData:
     temperature: float
@@ -79,7 +87,7 @@ class SensorData:
     @staticmethod
     def from_json(data: str) -> "SensorData":
         tmp = loads(data)
-        return SensorData(float(tmp["temperature"]), tmp["temperature_unit"], float(tmp["humidity"]), float(tmp["pressure"]), float(tmp["heat_index"]))
+        return SensorData(float(tmp["temperature"]), TemperatureUnit.from_string(tmp["temperature_unit"]), float(tmp["humidity"]), float(tmp["pressure"]), float(tmp["heat_index"]))
     
 @dataclass
 class Recipient:
