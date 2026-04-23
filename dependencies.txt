@@ -1,4 +1,4 @@
-smdb_api 0.14.3
+smdb_api == 0.14.3
 smdb_logger
 smdb_web_server
 discord

@@ -40,14 +40,14 @@ window.onload = function() {
             data.items.forEach(item => {
                 weatherHistoryData.push(item);
             });
-            refferenceData = data.refference;
+            referenceData = data.reference;
             updateHistory();
         })
-        .catch(error => console.log('Error fetching historycal weather:', error));
+        .catch(error => console.log('Error fetching historical weather:', error));
 
     // Simulated weather history data
     let weatherHistoryData = [];
-    let refferenceData = null;
+    let referenceData = null;
     
     let createItem = function(item, prevItem) {
         const weatherItemDiv = document.createElement('div');
@@ -86,13 +86,13 @@ window.onload = function() {
 
     let updateHistory = function() {
         const weatherHistoryDiv = document.getElementById('weatherHistory');
-        let prevItem = refferenceData;
+        let prevItem = referenceData;
         let temp = [];
         weatherHistoryData.slice().reverse().forEach(item => {
             temp.push(createItem(item, prevItem));
             prevItem = item;
         });
-        //temp.push(createItem(refferenceData, prevItem));
+        //temp.push(createItem(referenceData, prevItem));
         temp.slice().reverse().forEach(item => {
             weatherHistoryDiv.appendChild(item);
         });

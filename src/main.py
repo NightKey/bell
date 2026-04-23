@@ -76,7 +76,7 @@ class Bell:
         self.web_server.add_url_rule("/chart", self.__chart)
     
     def prepare_api(self):
-        self.api.create_function("AddRecepient", "Adds recepient to the bell and weather alerts. At least one argument is required, if multiple is present separate them by ','!\nUsage: &AddRecepient [falling|rising|bell]\nCategory: NETWORK", self.add_recipient, privilege=Privilege.OnlyAdmin, needs_arguments=True)
+        self.api.create_function("AddRecipient", "Adds recipient to the bell and weather alerts. At least one argument is required, if multiple is present separate them by ','!\nUsage: &AddRecipient [falling|rising|bell]\nCategory: NETWORK", self.add_recipient, privilege=Privilege.OnlyAdmin, needs_arguments=True)
 
     def save_datapoints(self) -> None:
         if not path.exists(path.join(ROOT, "data", "powerbi")):
@@ -102,7 +102,7 @@ class Bell:
         elif "history" in data.query:
             if len(self.sensor_history) >= 5:
                 self.sensor_history.sort(reverse=True)
-                data = {"items": [item.to_dict() for item in self.sensor_history[1:5]], "refference": self.sensor_history[5].to_dict()}
+                data = {"items": [item.to_dict() for item in self.sensor_history[1:5]], "reference": self.sensor_history[5].to_dict()}
             else:
                 data = {}
             return dumps(data)
