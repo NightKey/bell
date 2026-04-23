@@ -56,7 +56,7 @@ class Bell:
     def __init__(self, config_path: str):
         self.config_path = config_path
         config = self.read_config()
-        self.logger = Logger("Bell.log", log_folder=path.join(ROOT, "data"), level=LEVEL.DEBUG, use_caller_name=True)
+        self.logger = Logger("Bell.log", log_folder=path.join(ROOT, "data"), level=LEVEL.INFO, use_caller_name=True)
         self.api = API.from_config(path.join(ROOT, "data", "api.cfg"))
         self.web_server = HTMLServer(config["SERVER"]["host"], config["SERVER"]["port"], ROOT, logger=self.logger)
         self.sensor_history: List[SensorData] = []
@@ -131,7 +131,7 @@ class Bell:
             page_title="Weather",
             temperature=str(round(current_data.temperature, 1)),
             temperaturep=str(temperature_hue),
-            temperature_unit=current_data.temperature_unit,
+            temperature_unit=current_data.temperature_unit.value,
             temperaturechc = "blue" if temperature_dif < 0 else "red" if temperature_dif > 0 else "white",
             temperaturechd = (high_arrow if temperature_dif < -0.5 else up_arrow if temperature_dif < 0 else low_arrow if temperature_dif > 0.5 else down_arrow if temperature_dif > 0 else stagnating).replace("{TITLE}", "Temperature"),
             humidity=str(round(current_data.humidity, 1)),
